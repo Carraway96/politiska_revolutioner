@@ -309,7 +309,7 @@ body {
   border-color: #ef4444;
 }
 
-/* TIMELINE-LAYOUT */
+/* TIMELINE-LAYOUT – EN RAD MED LINJE */
 .timeline-layout {
   grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.5fr);
 }
@@ -319,70 +319,104 @@ body {
   border-radius: 1rem;
   padding: 0.75rem 0.9rem 1rem;
   box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
+  position: relative;
 }
 
-.timeline-legend {
+.timeline-labels {
   display: flex;
   justify-content: space-between;
   font-size: 0.8rem;
   color: #6b7280;
-  margin-bottom: 0.35rem;
+  padding: 0 0.2rem;
 }
 
 .timeline-slots {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-  gap: 0.4rem;
+  position: relative;
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  gap: 0.6rem;
+  padding: 1.4rem 0.2rem 0.2rem;
+}
+
+.timeline-slots::before {
+  content: "";
+  position: absolute;
+  left: 0.2rem;
+  right: 0.2rem;
+  top: 50%;
+  height: 4px;
+  border-radius: 999px;
+  background: linear-gradient(to right, #bfdbfe, #fecaca);
+  z-index: 0;
 }
 
 .timeline-slot {
-  min-height: 70px;
-  border-radius: 0.7rem;
-  background: #f3f4ff;
+  min-width: 90px;
+  min-height: 72px;
+  border-radius: 0.8rem;
+  background: rgba(248, 250, 252, 0.95);
   border: 2px dashed rgba(129, 140, 248, 0.9);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0.15rem;
   font-size: 0.8rem;
+  position: relative;
+  z-index: 1;
+}
+
+.timeline-slot::after {
+  content: attr(data-position);
+  position: absolute;
+  top: -1.1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.75rem;
+  color: #6b7280;
 }
 
 .timeline-slot.hovered {
   background: #e0edff;
 }
 
-/* ORSAK – KONSEKVENS-LAYOUT */
+/* ORSAK – KONSEKVENS-LAYOUT (KEDJOR) */
 .cause-layout {
   grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.8fr);
 }
 
-.cause-columns {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+.cause-chains {
+  display: flex;
+  flex-direction: column;
   gap: 0.75rem;
 }
 
-.category-column {
+.cause-chain-row {
   background: #ffffff;
   border-radius: 1rem;
   padding: 0.7rem;
   box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
-  min-height: 180px;
 }
 
-.category-column h3 {
-  margin-top: 0;
-  margin-bottom: 0.15rem;
+.cause-chain-row h3 {
+  margin: 0 0 0.4rem;
+  font-size: 1rem;
 }
 
-.category-description {
-  margin: 0 0 0.5rem;
-  font-size: 0.8rem;
-  color: #6b7280;
+.cause-chain-row-inner {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.cause-chain-slot h4 {
+  margin: 0 0 0.25rem;
+  font-size: 0.85rem;
+  color: #4b5563;
 }
 
 .dropzone {
-  min-height: 110px;
+  min-height: 80px;
   border-radius: 0.7rem;
   border: 2px dashed rgba(148, 163, 184, 0.9);
   background: #f9fafb;
@@ -449,7 +483,7 @@ body {
   color: #6b7280;
 }
 
-/* ANIMATIONER (enkla "animate.css"-liknande) */
+/* ANIMATIONER */
 @keyframes pulse-correct {
   0% {
     transform: scale(1);
@@ -523,5 +557,8 @@ body {
   }
   .card {
     font-size: 0.9rem;
+  }
+  .cause-chain-row-inner {
+    grid-template-columns: 1fr;
   }
 }
