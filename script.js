@@ -41,30 +41,32 @@ function setupDragAndDrop(rootElement) {
     draggedCard = null;
   });
 
-  rootElement.querySelectorAll(".dropzone, .timeline-slot, #timeline-card-bank, #cause-card-bank").forEach(
-    (zone) => {
-      zone.addEventListener("dragover", (e) => {
-        e.preventDefault();
-        if (!draggedCard) return;
-        const target = e.currentTarget;
-        target.classList.add("hovered");
-        e.dataTransfer.dropEffect = "move";
-      });
-
-      zone.addEventListener("dragleave", (e) => {
-        e.currentTarget.classList.remove("hovered");
-      });
-
-      zone.addEventListener("drop", (e) => {
-        e.preventDefault();
-        const target = e.currentTarget;
-        target.classList.remove("hovered");
-        if (!draggedCard) return;
-        handleDrop(target, draggedCard);
-        updateButtonsEnabled();
-      });
-    }
+  const zones = rootElement.querySelectorAll(
+    ".dropzone, #timeline-slots, #timeline-card-bank, #cause-card-bank"
   );
+
+  zones.forEach((zone) => {
+    zone.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      if (!draggedCard) return;
+      const target = e.currentTarget;
+      target.classList.add("hovered");
+      e.dataTransfer.dropEffect = "move";
+    });
+
+    zone.addEventListener("dragleave", (e) => {
+      e.currentTarget.classList.remove("hovered");
+    });
+
+    zone.addEventListener("drop", (e) => {
+      e.preventDefault();
+      const target = e.currentTarget;
+      target.classList.remove("hovered");
+      if (!draggedCard) return;
+      handleDrop(target, draggedCard, e);
+      updateButtonsEnabled();
+    });
+  });
 }
 
 // ======================
@@ -105,19 +107,10 @@ const timelineResetBtn = document.getElementById("timeline-reset-btn");
 const timelineScore = document.getElementById("timeline-score");
 const timelineComplete = document.getElementById("timeline-complete");
 
-function createTimelineSlots() {
-  timelineSlotsContainer.innerHTML = "";
-  orderedTimelineIds.forEach((id, index) => {
-    const slot = document.createElement("div");
-    slot.className = "timeline-slot";
-    slot.dataset.slotIndex = String(index);
-    slot.dataset.position = String(index + 1); // visas ovanför slottet
-    timelineSlotsContainer.appendChild(slot);
-  });
-}
-
 function createTimelineCards() {
   timelineCardBank.querySelectorAll(".card").forEach((c) => c.remove());
+  timelineSlotsContainer.innerHTML = "";
+
   const shuffled = [...timelineEventsData].sort(() => Math.random() - 0.5);
 
   shuffled.forEach((event) => {
@@ -134,40 +127,8 @@ function createTimelineCards() {
   });
 }
 
-function getCardInSlot(slot) {
-  return slot.querySelector(".card");
-}
-
-function handleDrop(target, card) {
-  const isTimelineSlot = target.classList.contains("timeline-slot");
-  const isCauseDropzone = target.classList.contains("dropzone");
-  const isTimelineBank = target.id === "timeline-card-bank";
-  const isCauseBank = target.id === "cause-card-bank";
-
-  if (!(isTimelineSlot || isCauseDropzone || isTimelineBank || isCauseBank)) return;
-
-  if (isTimelineSlot) {
-    const existingCard = getCardInSlot(target);
-    if (existingCard) {
-      timelineCardBank.appendChild(existingCard);
-    }
-    target.appendChild(card);
-  } else if (isCauseDropzone) {
-    target.appendChild(card);
-  } else if (isTimelineBank || isCauseBank) {
-    target.appendChild(card);
-  }
-
-  card.classList.remove("correct", "wrong", "animate-correct", "animate-wrong");
-}
-
-function filledTimelineSlotsCount() {
-  const slots = timelineSlotsContainer.querySelectorAll(".timeline-slot");
-  let filled = 0;
-  slots.forEach((slot) => {
-    if (getCardInSlot(slot)) filled++;
-  });
-  return filled;
+function getTimelineCards() {
+  return Array.from(timelineSlotsContainer.querySelectorAll(".card"));
 }
 
 // ======================
@@ -201,49 +162,122 @@ const causeResetBtn = document.getElementById("cause-reset-btn");
 const causeScore = document.getElementById("cause-score");
 const causeComplete = document.getElementById("cause-complete");
 
-function createCauseCards() {
-  causeCardBank.querySelectorAll(".card").forEach((c) => c.remove());
-  const shuffled = [...causeCardsData].sort(() => Math.random() - 0.5);
+// Deck för att visa max 3 kort åt gången
+let causeDeck = [];
+let causeDeckIndex = 0;
+const MAX_VISIBLE_CAUSE_CARDS = 3;
 
-  shuffled.forEach((item) => {
-    const card = document.createElement("div");
-    card.className = "card";
-    card.draggable = true;
-    card.dataset.id = item.id;
-    card.dataset.category = item.category;
-    card.dataset.chain = item.chain;
-    card.textContent = item.text;
+function resetCauseDeck() {
+  causeDeck = [...causeCardsData].sort(() => Math.random() - 0.5);
+  causeDeckIndex = 0;
+}
+
+function createCauseCardElement(item) {
+  const card = document.createElement("div");
+  card.className = "card";
+  card.draggable = true;
+  card.dataset.id = item.id;
+  card.dataset.category = item.category;
+  card.dataset.chain = item.chain;
+  card.textContent = item.text;
+  return card;
+}
+
+function refillCauseBank() {
+  // fyll på banken upp till MAX_VISIBLE_CAUSE_CARDS
+  while (
+    causeDeckIndex < causeDeck.length &&
+    causeCardBank.querySelectorAll(".card").length < MAX_VISIBLE_CAUSE_CARDS
+  ) {
+    const item = causeDeck[causeDeckIndex++];
+    const card = createCauseCardElement(item);
     causeCardBank.appendChild(card);
-  });
+  }
+}
 
-  // töm alla dropzones
+function createCauseCards() {
+  causeCardBank.innerHTML = "";
   document.querySelectorAll("#cause-chains .dropzone").forEach((dz) => {
     dz.innerHTML = "";
   });
+  resetCauseDeck();
+  refillCauseBank();
+}
+
+// ======================
+// DROP-HANTERING
+// ======================
+function handleDrop(target, card, event) {
+  const oldParent = card.parentNode;
+
+  // Tidslinje – dynamisk insättning
+  if (target === timelineSlotsContainer) {
+    const container = timelineSlotsContainer;
+
+    // ta bort kortet om det redan ligger på tidslinjen
+    if (card.parentNode === container) {
+      container.removeChild(card);
+    }
+
+    const cards = Array.from(container.querySelectorAll(".card"));
+    const x = event.clientX;
+
+    let insertIndex = cards.length;
+    for (let i = 0; i < cards.length; i++) {
+      const rect = cards[i].getBoundingClientRect();
+      const mid = rect.left + rect.width / 2;
+      if (x < mid) {
+        insertIndex = i;
+        break;
+      }
+    }
+
+    if (insertIndex === cards.length) {
+      container.appendChild(card);
+    } else {
+      container.insertBefore(card, cards[insertIndex]);
+    }
+  }
+  // Orsak-dropzone
+  else if (target.classList.contains("dropzone")) {
+    target.appendChild(card);
+  }
+  // Banker
+  else if (target === timelineCardBank || target === causeCardBank) {
+    target.appendChild(card);
+  }
+
+  // ta bort rätt/fel-styles vid flytt
+  card.classList.remove("correct", "wrong", "animate-correct", "animate-wrong");
+
+  // Om kortet flyttades FRÅN orsak-banken till en kedja → fyll på banken
+  if (oldParent === causeCardBank && target !== causeCardBank) {
+    refillCauseBank();
+  }
 }
 
 // ======================
 // RÄTTNING & POÄNG
 // ======================
 function updateButtonsEnabled() {
-  const allTimelinePlaced = filledTimelineSlotsCount() === orderedTimelineIds.length;
+  // tidslinje: alla kort på linjen?
+  const placedTimelineCards = getTimelineCards().length;
+  const allTimelinePlaced = placedTimelineCards === timelineEventsData.length;
   timelineCheckBtn.disabled = !allTimelinePlaced;
 
+  // orsaksspel: banken tom OCH alla kort utdelade?
   const causeBankCards = causeCardBank.querySelectorAll(".card");
-  const allCausePlaced = causeBankCards.length === 0;
+  const allCausePlaced =
+    causeBankCards.length === 0 && causeDeckIndex >= causeDeck.length;
   causeCheckBtn.disabled = !allCausePlaced;
 }
 
 function checkTimelineGame() {
-  const slots = timelineSlotsContainer.querySelectorAll(".timeline-slot");
+  const cards = getTimelineCards();
   let score = 0;
 
-  slots.forEach((slot) => {
-    const index = Number(slot.dataset.slotIndex);
+  cards.forEach((card, index) => {
     const correctId = orderedTimelineIds[index];
-    const card = getCardInSlot(slot);
-    if (!card) return;
-
     card.classList.remove("correct", "wrong", "animate-correct", "animate-wrong");
 
     if (card.dataset.id === correctId) {
@@ -269,10 +303,6 @@ function resetTimelineGame() {
   allCards.forEach((card) => {
     card.classList.remove("correct", "wrong", "animate-correct", "animate-wrong");
     timelineCardBank.appendChild(card);
-  });
-
-  timelineSlotsContainer.querySelectorAll(".timeline-slot").forEach((slot) => {
-    slot.innerHTML = "";
   });
 
   createTimelineCards();
@@ -326,7 +356,6 @@ function resetCauseGame() {
 // INIT
 // ======================
 function init() {
-  createTimelineSlots();
   createTimelineCards();
   createCauseCards();
 
