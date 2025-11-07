@@ -28,8 +28,8 @@
         <div class="hero-text">
           <h2>Välj spel</h2>
           <p>
-            Träna den amerikanska och franska revolutionen genom ett
-            tidslinjespel och ett orsak–konsekvens-spel.
+            Träna amerikanska och franska revolutionen genom ett
+            tidslinjespel och ett orsak–konsekvens–spel.
           </p>
           <div class="hero-buttons">
             <button class="btn primary large" data-view="timeline-view">
@@ -65,22 +65,24 @@
     <section id="timeline-view" class="view">
       <div class="game-header">
         <h2>Tidslinjespelet</h2>
-        <p>Dra händelserna till tidslinjen i rätt ordning (vänster = tidigast).</p>
+        <p>
+          Dra händelserna till tidslinjen i rätt ordning.
+          <strong>Det viktiga är ordningen – inte årtalen.</strong>
+        </p>
       </div>
 
       <div class="game-layout timeline-layout">
         <aside class="card-bank" id="timeline-card-bank" aria-label="Händelsekort att dra">
           <h3>Händelsekort</h3>
-          <p class="hint">Dra korten till tidslinjen nedan.</p>
+          <p class="hint">Dra korten till tidslinjen nedan (1 = först, 18 = sist).</p>
           <!-- Korten fylls med JS -->
         </aside>
 
         <section class="timeline-area">
-          <div class="timeline-legend">
-            <span>1750</span>
-            <span>1775</span>
-            <span>1800</span>
-            <span>1820</span>
+          <div class="timeline-labels">
+            <span>Först</span>
+            <span>Mitten</span>
+            <span>Sist</span>
           </div>
           <div id="timeline-slots" class="timeline-slots" aria-label="Tidslinje">
             <!-- Slotar fylls med JS -->
@@ -112,39 +114,94 @@
     <section id="cause-view" class="view">
       <div class="game-header">
         <h2>Orsak – Konsekvens – Långsiktig konsekvens</h2>
-        <p>Dra varje kort till rätt kategori.</p>
+        <p>
+          Dra korten till rätt plats i varje kedja.
+          <strong>Här tränar du både kategori och orsakssamband.</strong>
+        </p>
       </div>
 
       <div class="game-layout cause-layout">
         <aside class="card-bank" id="cause-card-bank" aria-label="Orsak- och konsekvenskort">
           <h3>Kort att placera</h3>
-          <p class="hint">Dra korten till rätt kolumn.</p>
+          <p class="hint">Dra korten till rätt ruta i orsakskedjorna.</p>
           <!-- Korten fylls med JS -->
         </aside>
 
-        <section class="cause-columns">
-          <div class="category-column" data-category="orsak">
-            <h3>Orsak</h3>
-            <p class="category-description">
-              Varför startade revolutionerna? Bakomliggande problem och spänningar.
-            </p>
-            <div class="dropzone" aria-label="Orsak"></div>
+        <section class="cause-chains" id="cause-chains">
+          <!-- Kedja A -->
+          <div class="cause-chain-row" data-chain="a">
+            <h3>1. Amerikanska revolutionen – skatter & självstyre</h3>
+            <div class="cause-chain-row-inner">
+              <div class="cause-chain-slot" data-slot-category="orsak">
+                <h4>Orsak</h4>
+                <div class="dropzone" aria-label="Orsak"></div>
+              </div>
+              <div class="cause-chain-slot" data-slot-category="konsekvens">
+                <h4>Konsekvens</h4>
+                <div class="dropzone" aria-label="Konsekvens"></div>
+              </div>
+              <div class="cause-chain-slot" data-slot-category="lang">
+                <h4>Långsiktig konsekvens</h4>
+                <div class="dropzone" aria-label="Långsiktig konsekvens"></div>
+              </div>
+            </div>
           </div>
 
-          <div class="category-column" data-category="konsekvens">
-            <h3>Konsekvens</h3>
-            <p class="category-description">
-              Vad hände direkt när revolutionerna bröt ut?
-            </p>
-            <div class="dropzone" aria-label="Konsekvens"></div>
+          <!-- Kedja B -->
+          <div class="cause-chain-row" data-chain="b">
+            <h3>2. Amerikanska revolutionen – upplysning & rättigheter</h3>
+            <div class="cause-chain-row-inner">
+              <div class="cause-chain-slot" data-slot-category="orsak">
+                <h4>Orsak</h4>
+                <div class="dropzone" aria-label="Orsak"></div>
+              </div>
+              <div class="cause-chain-slot" data-slot-category="konsekvens">
+                <h4>Konsekvens</h4>
+                <div class="dropzone" aria-label="Konsekvens"></div>
+              </div>
+              <div class="cause-chain-slot" data-slot-category="lang">
+                <h4>Långsiktig konsekvens</h4>
+                <div class="dropzone" aria-label="Långsiktig konsekvens"></div>
+              </div>
+            </div>
           </div>
 
-          <div class="category-column" data-category="lang">
-            <h3>Långsiktig konsekvens</h3>
-            <p class="category-description">
-              Vad förändrades på längre sikt i världen?
-            </p>
-            <div class="dropzone" aria-label="Långsiktig konsekvens"></div>
+          <!-- Kedja C -->
+          <div class="cause-chain-row" data-chain="c">
+            <h3>3. Franska revolutionen – brödkris & Bastiljen</h3>
+            <div class="cause-chain-row-inner">
+              <div class="cause-chain-slot" data-slot-category="orsak">
+                <h4>Orsak</h4>
+                <div class="dropzone" aria-label="Orsak"></div>
+              </div>
+              <div class="cause-chain-slot" data-slot-category="konsekvens">
+                <h4>Konsekvens</h4>
+                <div class="dropzone" aria-label="Konsekvens"></div>
+              </div>
+              <div class="cause-chain-slot" data-slot-category="lang">
+                <h4>Långsiktig konsekvens</h4>
+                <div class="dropzone" aria-label="Långsiktig konsekvens"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Kedja D -->
+          <div class="cause-chain-row" data-chain="d">
+            <h3>4. Franska revolutionen – inflytande & kungamakten</h3>
+            <div class="cause-chain-row-inner">
+              <div class="cause-chain-slot" data-slot-category="orsak">
+                <h4>Orsak</h4>
+                <div class="dropzone" aria-label="Orsak"></div>
+              </div>
+              <div class="cause-chain-slot" data-slot-category="konsekvens">
+                <h4>Konsekvens</h4>
+                <div class="dropzone" aria-label="Konsekvens"></div>
+              </div>
+              <div class="cause-chain-slot" data-slot-category="lang">
+                <h4>Långsiktig konsekvens</h4>
+                <div class="dropzone" aria-label="Långsiktig konsekvens"></div>
+              </div>
+            </div>
           </div>
         </section>
       </div>
@@ -161,9 +218,7 @@
       <div id="cause-complete" class="level-complete hidden">
         <div class="level-card">
           <h3>🏆 Du klarade nivå 2!</h3>
-          <p>
-            Du satte alla orsaker, konsekvenser och långsiktiga konsekvenser på rätt plats.
-          </p>
+          <p>Du satte alla orsaker, konsekvenser och långsiktiga konsekvenser på rätt plats i kedjorna.</p>
           <button class="btn secondary" data-view="home-view">
             Tillbaka till huvudmenyn
           </button>
