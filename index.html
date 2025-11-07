@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <title>Revolutionernas spel – tidslinje & orsaker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="header-title">
+        <span class="logo-badge">R</span>
+        <h1>Revolutionernas spel</h1>
+      </div>
+      <nav class="top-nav">
+        <button class="nav-link" data-view="home-view">Meny</button>
+        <button class="nav-link" data-view="timeline-view">Tidslinje</button>
+        <button class="nav-link" data-view="cause-view">Orsak–Konsekvens</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="app-main">
+    <!-- STARTSIDA / MENY -->
+    <section id="home-view" class="view active">
+      <div class="hero">
+        <div class="hero-text">
+          <h2>Välj spel</h2>
+          <p>
+            Träna den amerikanska och franska revolutionen genom ett
+            tidslinjespel och ett orsak–konsekvens-spel.
+          </p>
+          <div class="hero-buttons">
+            <button class="btn primary large" data-view="timeline-view">
+              🎯 Tidslinjespelet
+            </button>
+            <button class="btn secondary large" data-view="cause-view">
+              🔗 Orsak–Konsekvens-spelet
+            </button>
+          </div>
+        </div>
+        <div class="hero-illustration">
+          <!-- Lägg din egen bild här -->
+          <img src="images/timeline-background.jpg" alt="Illustration av tidslinje över revolutioner" />
+        </div>
+      </div>
+
+      <section class="info-section">
+        <h3>Amerikanska vs franska revolutionen</h3>
+        <div class="info-grid">
+          <article class="info-card american">
+            <h4>Amerikanska revolutionen</h4>
+            <p>Kolonierna i Nordamerika gör uppror mot Storbritannien och bildar USA.</p>
+          </article>
+          <article class="info-card french">
+            <h4>Franska revolutionen</h4>
+            <p>Folket i Frankrike gör uppror mot kungen och adeln, och nya idéer om demokrati växer fram.</p>
+          </article>
+        </div>
+      </section>
+    </section>
+
+    <!-- TIDSLINJESPEL -->
+    <section id="timeline-view" class="view">
+      <div class="game-header">
+        <h2>Tidslinjespelet</h2>
+        <p>Dra händelserna till tidslinjen i rätt ordning (vänster = tidigast).</p>
+      </div>
+
+      <div class="game-layout timeline-layout">
+        <aside class="card-bank" id="timeline-card-bank" aria-label="Händelsekort att dra">
+          <h3>Händelsekort</h3>
+          <p class="hint">Dra korten till tidslinjen nedan.</p>
+          <!-- Korten fylls med JS -->
+        </aside>
+
+        <section class="timeline-area">
+          <div class="timeline-legend">
+            <span>1750</span>
+            <span>1775</span>
+            <span>1800</span>
+            <span>1820</span>
+          </div>
+          <div id="timeline-slots" class="timeline-slots" aria-label="Tidslinje">
+            <!-- Slotar fylls med JS -->
+          </div>
+        </section>
+      </div>
+
+      <div class="game-controls">
+        <div class="score-area">
+          <button id="timeline-check-btn" class="btn primary" disabled>Rätta tidslinjen</button>
+          <button id="timeline-reset-btn" class="btn ghost">Försök igen</button>
+          <button class="btn link" data-view="home-view">⬅ Tillbaka till meny</button>
+        </div>
+        <p id="timeline-score" class="score-text"></p>
+      </div>
+
+      <div id="timeline-complete" class="level-complete hidden">
+        <div class="level-card">
+          <h3>🎉 Du klarade tidslinjen!</h3>
+          <p>Alla händelser ligger i rätt ordning.</p>
+          <button class="btn secondary" data-view="cause-view">
+            Gå vidare till Orsak–Konsekvens-spelet
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ORSAK – KONSEKVENS – LÅNGSIKTIG KONSEKVENS -->
+    <section id="cause-view" class="view">
+      <div class="game-header">
+        <h2>Orsak – Konsekvens – Långsiktig konsekvens</h2>
+        <p>Dra varje kort till rätt kategori.</p>
+      </div>
+
+      <div class="game-layout cause-layout">
+        <aside class="card-bank" id="cause-card-bank" aria-label="Orsak- och konsekvenskort">
+          <h3>Kort att placera</h3>
+          <p class="hint">Dra korten till rätt kolumn.</p>
+          <!-- Korten fylls med JS -->
+        </aside>
+
+        <section class="cause-columns">
+          <div class="category-column" data-category="orsak">
+            <h3>Orsak</h3>
+            <p class="category-description">
+              Varför startade revolutionerna? Bakomliggande problem och spänningar.
+            </p>
+            <div class="dropzone" aria-label="Orsak"></div>
+          </div>
+
+          <div class="category-column" data-category="konsekvens">
+            <h3>Konsekvens</h3>
+            <p class="category-description">
+              Vad hände direkt när revolutionerna bröt ut?
+            </p>
+            <div class="dropzone" aria-label="Konsekvens"></div>
+          </div>
+
+          <div class="category-column" data-category="lang">
+            <h3>Långsiktig konsekvens</h3>
+            <p class="category-description">
+              Vad förändrades på längre sikt i världen?
+            </p>
+            <div class="dropzone" aria-label="Långsiktig konsekvens"></div>
+          </div>
+        </section>
+      </div>
+
+      <div class="game-controls">
+        <div class="score-area">
+          <button id="cause-check-btn" class="btn primary" disabled>Rätta orsaksspelet</button>
+          <button id="cause-reset-btn" class="btn ghost">Försök igen</button>
+          <button class="btn link" data-view="home-view">⬅ Tillbaka till meny</button>
+        </div>
+        <p id="cause-score" class="score-text"></p>
+      </div>
+
+      <div id="cause-complete" class="level-complete hidden">
+        <div class="level-card">
+          <h3>🏆 Du klarade nivå 2!</h3>
+          <p>
+            Du satte alla orsaker, konsekvenser och långsiktiga konsekvenser på rätt plats.
+          </p>
+          <button class="btn secondary" data-view="home-view">
+            Tillbaka till huvudmenyn
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <small>Amerikanska revolutionen = blå kort • Franska revolutionen = röda kort</small>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
